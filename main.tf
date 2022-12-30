@@ -3,24 +3,31 @@ provider "aws" {
 }
 
 
-resource "aws_vpc" "main" {
-  cidr_block = "10.0.0.0/16"
+resource "aws_vpc" "ops_vpc" {
+  cidr_block = "10.1.0.0/16"
+  tags = {
+    Name = "Ops VPC"
+  }
 }
-
+resource "aws_vpc" "dev_vpc" {
+  cidr_block = "10.0.0.0/16"
+  tags = {
+    Name = "Dev VPC"
+  }
+}
 resource "aws_subnet" "public_subnet" {
-  vpc_id     = aws_vpc.main.id
+  vpc_id     = aws_vpc.ops_vpc.id
   cidr_block = "10.0.1.0/24"
 
   tags = {
     Name = "Public-Subnet"
   }
 }
-
-resource "aws_instance" "my_first_server" {
+resource "aws_instance" "web_server" {
   ami           = ami-0b5eea76982371e91
   instance_type = "t2.micro"
 
   tags = {
-    Name = "HelloWorld"
+    Name = "Web Server"
   }
 }
